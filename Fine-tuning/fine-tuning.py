@@ -47,10 +47,10 @@ os.environ["HF_TOKEN"] = "your_token"
 os.environ["HF_ALLOW_CODE_EVAL"] = "1"
 
 model_path = "/root/autodl-fs/Mistral-7B-Instruct-v0.1"
-glitch_token_csv_path = "/root/autodl-fs/检测的glitchtokens/Mistral-7B-Instruct-v0.1-glitch-tokens-my.csv"
+glitch_token_csv_path = "/root/autodl-fs/glitchtokens/Mistral-7B-Instruct-v0.1-glitch-tokens-my.csv"
 
-fix_rate_save_dir = "/root/autodl-fs/训练代码/用很小的alpha的实验/结果/mistral"
-eval_save_dir = "/root/autodl-fs/训练代码/用很小的alpha的实验/评估结果/mistral"
+fix_rate_save_dir = "/root/autodl-fs/results/mistral"
+eval_save_dir = "/root/autodl-fs/results/eval/mistral"
 
 # Evaluation configuration
 FIXED_SEED = 42
