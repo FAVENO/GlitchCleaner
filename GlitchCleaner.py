@@ -251,10 +251,19 @@ def count_passed_glitchtokens(model,model_path):
                 add_generation_prompt=True,
                 return_tensors='pt'
             ).to(device)
-            output_ids = model.generate(input_ids, max_new_tokens=10, do_sample=False, temperature=None, top_p=None)[0]
-            all_response = tokenizer.decode(output_ids, skip_special_tokens=True)
-            k = all_response.find("assistant") + len("assistant")
-            response = all_response[k:]
+            prompt_len = input_ids.shape[1]
+
+            output_ids = model.generate(
+                input_ids,
+                max_new_tokens=10,
+                do_sample=False,
+                temperature=None,
+                top_p=None,
+            )[0]
+
+            gen_ids = output_ids[prompt_len:]
+            response = tokenizer.decode(gen_ids, skip_special_tokens=True)
+
             return token_without_space in response
         else:
             text1 = "Question: Can you repeat the string '"
