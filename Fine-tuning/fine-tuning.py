@@ -522,17 +522,18 @@ def repetive_judge(tokenizer, token_id, model_path, device):
             add_generation_prompt=True,
             return_tensors="pt",
         ).to(device)
-
-        output_ids = wrapped_model.generate(
-            input_ids, max_new_tokens=10, do_sample=False, temperature=None, top_p=None
+        prompt_len = input_ids.shape[1]
+        output_ids = model.generate(
+            input_ids,
+            max_new_tokens=10,
+            do_sample=False,
+            temperature=None,
+            top_p=None,
         )[0]
-        all_response = tokenizer.decode(output_ids, skip_special_tokens=True)
-        k = all_response.find("assistant") + len("assistant")
-        response = all_response[k:]
-        if token_without_space in response:
-            return True
-        else:
-            return False
+        gen_ids = output_ids[prompt_len:]
+        response = tokenizer.decode(gen_ids, skip_special_tokens=True)
+
+        return token_without_space in response
 
     else:
         text1 = "Question: Can you repeat the string '"
@@ -591,23 +592,7 @@ for token_id in glitchtokens:
         )
         print(f"已处理 {idx + 1}/{total_tokens} 个tokens")
 
-if passed_tokens > 0:
-    print("通过检测的tokens示例:")
-    for i, token_id in enumerate(passed_token_ids[:5]):
-        token_str = tokenizer.decode([token_id])
-        print(f"  {i + 1}. Token ID: {token_id}, Token: '{token_str}'")
-
-    if passed_tokens > 5:
-        print(f"  ... 以及其他 {passed_tokens - 5} 个tokens")
-
-print(f"测试模型为{model_path}")
-print(f"训练轮数为{num_epochs}")
-print(f"训练批次大小为{batch_size * gradient_accumulation_steps}")
-print(f"keylayer为{list(target_layers)}")
-print(f"lora_r为{lora_r},lora_缩放因子为{lora_alpha}")
-print(f"总共检测了 {total_tokens} 个glitch tokens")
 print(
-    f"通过repetive_judge检测的tokens数量: {passed_tokens} "
     f"({passed_tokens / total_tokens * 100:.2f}%)"
 )
 
